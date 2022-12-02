@@ -3,6 +3,14 @@ name = "aoc_22_1"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "aoc_22_1a"
+path = "src/main_a.rs"
+
+[[bin]]
+name = "aoc_22_1b"
+path = "src/main_b.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
