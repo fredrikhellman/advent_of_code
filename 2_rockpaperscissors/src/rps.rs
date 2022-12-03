@@ -17,7 +17,6 @@ impl Outcome {
 }
 
 #[derive(Debug)]
-#[derive(PartialEq)]
 pub enum Shape {
     Rock = 0,
     Paper = 1,
