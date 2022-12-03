@@ -1,0 +1,12 @@
+[package]
+name = "rockpaperscissors"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "rockpaperscissors_a"
+path = "src/main_a.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
