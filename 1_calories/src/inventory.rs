@@ -22,9 +22,9 @@ fn read_next_inventory<B>(lines: &mut std::io::Lines<B>) -> Option<Vec<i32>> whe
     }
 }
 
-pub fn read_all_inventories<B>(lines: &mut std::io::Lines<B>) -> Vec<Vec<i32>> where B: std::io::BufRead {
-    let mut inventories : Vec<Vec<i32>> = Vec::new();
-    while let Some(inventory) = read_next_inventory(lines) {
+pub fn read_all_inventories<B>(mut lines: std::io::Lines<B>) -> Vec<Vec<i32>> where B: std::io::BufRead {
+    let mut inventories = Vec::new();
+    while let Some(inventory) = read_next_inventory(&mut lines) {
         inventories.push(inventory);
     }
     inventories
