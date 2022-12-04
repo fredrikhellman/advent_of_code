@@ -3,6 +3,14 @@ name = "rucksack"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "rucksack_a"
+path = "src/main_a.rs"
+
+[[bin]]
+name = "rucksack_b"
+path = "src/main_b.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
