@@ -62,46 +62,48 @@ fn remove_jammed_valves(cave: &Cave) -> Cave {
     Cave {rates, dists, start}
 }
 
-fn brute_force(cave: &Cave, time: i32) -> i32{
-    fn recursive_loss(cave: &Cave, path: &mut Vec<usize>, time_left: i32) -> (i32, Vec<usize>) {
+fn brute_force(cave: &Cave, start_times: &Vec<i32>) -> i32{
+    fn recursive_loss(cave: &Cave, path: &mut Vec<usize>, current: Option<usize>, time_left: i32, start_times: &Vec<i32>) -> i32 {
 	if time_left <= 0 {
-	    (0, path.clone())
+	    if let Some(new_time_left) = start_times.iter().next() {
+		let new_start_times = start_times.iter().skip(1).cloned().collect::<Vec<i32>>();
+		recursive_loss(cave, path, None, *new_time_left, &new_start_times)
+	    } else {
+		0
+	    }
 	} else {
 	    let n = cave.rates.len();
 	    
-	    let current : usize;
-	    let current_loss = match path.last() {
-		None => {
-		    current = cave.start;
-		    0},
-		Some(v) => {
-		    current = *v;
-		    time_left * cave.rates[current]
-		}
+	    let current_loss = match current {
+		None => 0,
+		Some(c) => time_left * cave.rates[c]
 	    };
 	    
 	    let mut max_loss = 0;
-	    let mut opt_path = path.clone();
 	    for next in 0..n {
 		if path.contains(&next) {
 		    continue;
 		} else {
 		    path.push(next);
-		    let (loss, best_path) = recursive_loss(cave, path, time_left - cave.dists[current*n + next] - 1);
+		    let current_vertex = current.unwrap_or(cave.start);
+		    let loss = recursive_loss(cave, path, Some(next), time_left - cave.dists[current_vertex*n + next] - 1, start_times);
 		    if loss > max_loss {
 			max_loss = loss;
-			opt_path = best_path;
 		    }
 		    path.pop();
 		}
 	    }
-	    (current_loss + max_loss, opt_path)
+	    // Don't do anything the remaining time
+	    let loss = recursive_loss(cave, path, None, 0, start_times);
+	    if loss > max_loss {
+		max_loss = loss;
+	    }
+	    current_loss + max_loss
 	}
     }
 
     let mut path : Vec<usize> = Vec::new();
-    let (loss, opt_path) = recursive_loss(&cave, &mut path, time);
-    println!("{:?}", opt_path);
+    let loss = recursive_loss(&cave, &mut path, None, 0, start_times);
     loss
 }
 
@@ -168,7 +170,13 @@ fn parse_cave_from_input(input: &str) -> Cave {
 fn solve_a(input: &str) {
     let cave = parse_cave_from_input(input);
     let cave_small = remove_jammed_valves(&cave);
-    println!("{}", brute_force(&cave_small, 30));
+    println!("{}", brute_force(&cave_small, &vec![30]));
+}
+
+fn solve_b(input: &str) {
+    let cave = parse_cave_from_input(input);
+    let cave_small = remove_jammed_valves(&cave);
+    println!("{}", brute_force(&cave_small, &vec![26, 26]));
 }
 
 fn main() {
@@ -176,4 +184,5 @@ fn main() {
     std::io::stdin().lock().read_to_string(&mut string).expect("Failed to read from stdin");
 
     solve_a(&string);
+    solve_b(&string);
 }
